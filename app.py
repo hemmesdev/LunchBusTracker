@@ -40,5 +40,13 @@ def serve_index():
 def serve_script():
     return send_from_directory('.', 'script.js')
 
+@app.route('/finish.svg')
+def serve_png():
+    return send_from_directory('.', 'finish.svg')
+
+@app.route('/bus.svg')
+def serve_bus():
+    return send_from_directory('.', 'bus.svg')
+
 if __name__ == '__main__':
     app.run(port=8080, debug=True)

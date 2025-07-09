@@ -4,14 +4,30 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-const marker = L.marker([0, 0]).addTo(map);
-marker.bindPopup("<b>Current Location</b>").openPopup();
+const busIcon = L.icon({
+    iconUrl: 'bus.svg',
+    iconSize: [48, 48]
+})
+
+const marker = L.marker([0, 0], { icon: busIcon }).addTo(map);
+
+const finishIcon = L.icon({
+    iconUrl: 'finish.svg',
+    iconSize: [48, 48]
+});
+
+const destination = L.marker([52.29202405462692, 4.726858205798323], { icon: finishIcon }).addTo(map);
+
+map.setView(destination.getLatLng(), 15); 
 
 async function updateMarkerPosition() {
     const response = await fetch("/api/location");
     const {latitude, longitude} = await response.json();
     const newLatLng = new L.LatLng(latitude, longitude);
     marker.setLatLng(newLatLng);
+
+    const bounds = L.latLngBounds([marker.getLatLng(), destination.getLatLng()]);
+    map.fitBounds(bounds, { padding: [50, 50] });
 }
 
 updateMarkerPosition();
